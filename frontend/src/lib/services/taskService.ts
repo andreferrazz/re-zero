@@ -12,13 +12,13 @@ export async function getAllTasks(): Promise<Task[]> {
 export function filterActive(tasks: Task[]): Task[] {
   return tasks
     .filter((t) => t.status === 'active')
-    .sort((a, b) => a.position - b.position)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 }
 
 export function filterDotted(tasks: Task[]): Task[] {
   return tasks
     .filter((t) => t.status === 'dotted')
-    .sort((a, b) => a.position - b.position)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 }
 
 async function getNextPosition(): Promise<number> {
