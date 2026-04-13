@@ -8,7 +8,7 @@
 </script>
 
 {#if tasks.length > 0}
-	<div class="flex items-center justify-between mb-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+	<div class="flex items-center justify-between mb-3 mt-8">
 		<h2 class="text-sm font-semibold text-blue-600 uppercase tracking-wide">{t.tasks.dottedHeader}</h2>
 		<button
 			onclick={undotAll}
