@@ -1,18 +1,4 @@
 services:
-  frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_COUCHDB_URL: ${COUCHDB_URL}
-    ports:
-      - "${FRONTEND_PORT:-4000}:3000"
-    environment:
-      COUCHDB_URL: ${COUCHDB_URL}
-      COUCHDB_USER: ${COUCHDB_USER}
-      COUCHDB_PASSWORD: ${COUCHDB_PASSWORD}
-    depends_on:
-      - couchdb
-
   couchdb:
     image: couchdb:3.5.1
     ports:

@@ -26,7 +26,6 @@ Resistance Zero (Re-zero) is a time management system created by [Mark Forster](
 ## Tech stack
 
 - **Frontend:** SvelteKit 2, Svelte 5 (Runes), TailwindCSS 4, PouchDB
-- **Backend:** Node.js signup proxy server
 - **Database:** CouchDB 3.5.1
 - **Tooling:** Vite, Vitest, Playwright
 
@@ -51,31 +50,21 @@ cp .env.example .env
 docker compose up
 ```
 
-This starts the frontend (port 3001), backend proxy (port 3000), and CouchDB (port 5984).
+This starts the frontend and CouchDB.
 
 ### Frontend only
 
 ```sh
-npm --prefix frontend install
-npm --prefix frontend run dev
-```
-
-## Project structure
-
-```
-├── frontend/          # SvelteKit app
-├── backend/           # Node.js signup proxy
-├── docker-compose.yml
-├── .env.example
-└── CLAUDE.md
+npm install
+npm run dev
 ```
 
 ## Development commands
 
-| Command                               | Description                     |
-|---------------------------------------|---------------------------------|
-| `npm --prefix frontend run dev`       | Start dev server                |
-| `npm --prefix frontend run build`     | Production build                |
-| `npm --prefix frontend run check`     | TypeScript/Svelte type checking |
-| `npm --prefix frontend run test:unit` | Run unit tests (Vitest)         |
-| `npm --prefix frontend run test:e2e`  | Run E2E tests (Playwright)      |
+| Command                | Description                     |
+|------------------------|---------------------------------|
+| `npm run dev`          | Start dev server                |
+| `npm run build`        | Production build                |
+| `npm run check`        | TypeScript/Svelte type checking |
+| `npm run test:unit`    | Run unit tests (Vitest)         |
+| `npm run test:e2e`     | Run E2E tests (Playwright)      |
