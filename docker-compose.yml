@@ -2,15 +2,10 @@ services:
   couchdb:
     image: couchdb:3.5.1
     ports:
-      - "${COUCHDB_PORT:-4002}:5984"
+      - "5984:5984"
     environment:
-      COUCHDB_USER: ${COUCHDB_USER}
-      COUCHDB_PASSWORD: ${COUCHDB_PASSWORD}
-      COUCHDB_BIND_ADDRESS: ${COUCHDB_BIND_ADDRESS}
-      COUCHDB_AUTH_SECRET: ${COUCHDB_AUTH_SECRET}
-      COUCHDB_AUTH_TIMEOUT: ${COUCHDB_AUTH_TIMEOUT}
-      COUCHDB_ALLOWED_ORIGINS: ${COUCHDB_ALLOWED_ORIGINS}
-      COUCHDB_DATABASE_PREFIX: ${COUCHDB_DATABASE_PREFIX}
+      COUCHDB_USER: "admin"
+      COUCHDB_PASSWORD: "admin"
     configs:
       - source: couchdb_ini
         target: /opt/couchdb/etc/local.d/local.ini
@@ -29,19 +24,19 @@ configs:
 
       [chttpd]
       enable_cors = true
-      bind_address = ${COUCHDB_BIND_ADDRESS}
+      bind_address = 0.0.0.0
 
       [chttpd_auth]
-      secret = ${COUCHDB_AUTH_SECRET}
-      timeout = ${COUCHDB_AUTH_TIMEOUT}
+      secret = couch-auth-secret
+      timeout = 600
 
       [cors]
-      origins = ${COUCHDB_ALLOWED_ORIGINS}
+      origins = *
       credentials = true
       methods = GET, PUT, POST, HEAD, DELETE
       headers = accept, authorization, content-type, origin, referer, x-csrf-token
 
       [couch_peruser]
       enable = true
-      database_prefix = ${COUCHDB_DATABASE_PREFIX}
+      database_prefix = rezero_
       delete_dbs = false
