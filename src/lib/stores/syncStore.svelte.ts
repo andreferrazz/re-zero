@@ -1,4 +1,5 @@
-import { initSync } from '../services/syncService.js'
+import { initSync, stopSync } from '../services/syncService.js'
+import { logout as authLogout } from '../auth.js'
 import { refresh } from './taskStore.svelte.js'
 import type { SyncStatus } from '../types.js'
 
@@ -13,4 +14,10 @@ export async function startSync() {
     (newStatus) => { status = newStatus },
     () => refresh(),
   )
+}
+
+export async function logout() {
+  stopSync()
+  await authLogout()
+  status = 'local'
 }

@@ -10,6 +10,7 @@ export const en: Translations = {
 		syncing: 'Syncing',
 		offline: 'Offline',
 		local: 'Local only',
+		logout: 'Sign out',
 	},
 	tasks: {
 		addPlaceholder: 'Add a new task...',

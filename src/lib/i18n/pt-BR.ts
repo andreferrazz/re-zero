@@ -8,6 +8,7 @@ export const ptBR = {
 		syncing: 'Sincronizando',
 		offline: 'Offline',
 		local: 'Somente local',
+		logout: 'Sair',
 	},
 	tasks: {
 		addPlaceholder: 'Adicionar uma nova tarefa...',

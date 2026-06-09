@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { SyncStatus } from '$lib/types.js';
-	import { getSyncStatus } from '$lib/stores/syncStore.svelte.js';
+	import { getSyncStatus, logout } from '$lib/stores/syncStore.svelte.js';
 	import { getTranslations } from '$lib/i18n/index.js';
 
 	let t = $derived(getTranslations());
@@ -20,14 +20,43 @@
 	};
 
 	let status = $derived(getSyncStatus());
+	let menuOpen = $state(false);
+
+	async function handleLogout() {
+		menuOpen = false;
+		await logout();
+	}
 </script>
 
 {#if status === 'local'}
-<a href="/login" class="text-xs px-2 py-0.5 rounded-full {colors[status]} hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-	{labels[status]}
-</a>
+	<a href="/login" class="text-xs px-2 py-0.5 rounded-full {colors[status]} hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+		{labels[status]}
+	</a>
 {:else}
-<span class="text-xs px-2 py-0.5 rounded-full {colors[status] || ''}">
-	{labels[status] || status}
-</span>
+	<div class="relative">
+		<button
+			type="button"
+			onclick={() => (menuOpen = !menuOpen)}
+			class="text-xs px-2 py-0.5 rounded-full {colors[status] || ''} hover:opacity-80 transition-opacity cursor-pointer"
+		>
+			{labels[status] || status}
+		</button>
+		{#if menuOpen}
+			<button
+				type="button"
+				class="fixed inset-0 z-10 cursor-default"
+				aria-label="Close menu"
+				onclick={() => (menuOpen = false)}
+			></button>
+			<div class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 overflow-hidden">
+				<button
+					type="button"
+					onclick={handleLogout}
+					class="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+				>
+					{t.sync.logout}
+				</button>
+			</div>
+		{/if}
+	</div>
 {/if}
