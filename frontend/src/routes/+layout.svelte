@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import '../app.css';
-	import { refresh, startListening, stopListening } from '$lib/stores/taskStore.svelte.js';
-	import { startSync } from '$lib/stores/syncStore.svelte.js';
 	import { getTheme } from '$lib/stores/themeStore.svelte.js';
 
 	let { children }: { children: Snippet } = $props();
@@ -12,11 +10,19 @@
 	});
 
 	$effect(() => {
-		refresh();
-		startListening();
-		startSync();
+		let stop: (() => void) | undefined;
+		(async () => {
+			const [tasks, sync] = await Promise.all([
+				import('$lib/stores/taskStore.svelte.js'),
+				import('$lib/stores/syncStore.svelte.js')
+			]);
+			tasks.refresh();
+			tasks.startListening();
+			sync.startSync();
+			stop = tasks.stopListening;
+		})();
 
-		return () => stopListening();
+		return () => stop?.();
 	});
 </script>
 

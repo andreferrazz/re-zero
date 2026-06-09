@@ -4,19 +4,12 @@ services:
       context: ./frontend
       args:
         VITE_COUCHDB_URL: ${COUCHDB_URL}
-        VITE_SIGNUP_URL: ${BACKEND_URL}
     ports:
-      - "${FRONTEND_PORT:-4000}:80"
-
-  backend:
-    build: ./backend
-    ports:
-      - "${BACKEND_PORT:-4001}:3000"
+      - "${FRONTEND_PORT:-4000}:3000"
     environment:
       COUCHDB_URL: ${COUCHDB_URL}
       COUCHDB_USER: ${COUCHDB_USER}
       COUCHDB_PASSWORD: ${COUCHDB_PASSWORD}
-      BACKEND_ALLOWED_ORIGINS: ${BACKEND_ALLOWED_ORIGINS:-*}
     depends_on:
       - couchdb
 

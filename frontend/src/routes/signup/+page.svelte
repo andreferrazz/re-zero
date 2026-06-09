@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { signup } from '$lib/auth.js';
-	import { startSync } from '$lib/stores/syncStore.svelte.js';
+	import { enhance } from '$app/forms';
+	import { login } from '$lib/auth.js';
 	import { getTranslations } from '$lib/i18n/index.js';
+	import type { SubmitFunction } from '@sveltejs/kit';
 
 	let t = $derived(getTranslations());
 	let username = $state('');
@@ -13,29 +14,44 @@
 
 	let errorMap: Record<string, string> = $derived({
 		'Username already taken': t.signup.usernameTaken,
-		'Sign-up failed': t.signup.failed,
+		'Sign-up failed': t.signup.failed
 	});
 
-	async function handleSubmit(e: SubmitEvent) {
-		e.preventDefault();
+	const submit: SubmitFunction = ({ cancel, formData }) => {
 		error = '';
 
 		if (password !== confirmPassword) {
 			error = t.signup.passwordsMismatch;
+			cancel();
 			return;
 		}
 
+		formData.set('name', username.trim());
 		loading = true;
 
-		try {
-			await signup(username.trim(), password);
-			await startSync();
-			goto('/');
-		} catch (err) {
-			error = err instanceof Error ? (errorMap[err.message] ?? err.message) : t.signup.failed;
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				try {
+					await login(username.trim(), password);
+					const { startSync } = await import('$lib/stores/syncStore.svelte.js');
+					await startSync();
+					goto('/');
+				} catch {
+					error = t.signup.failed;
+					loading = false;
+				}
+				return;
+			}
+
+			if (result.type === 'failure') {
+				const msg = (result.data?.error as string | undefined) ?? 'Sign-up failed';
+				error = errorMap[msg] ?? msg;
+			} else {
+				error = t.signup.failed;
+			}
 			loading = false;
-		}
-	}
+		};
+	};
 </script>
 
 <svelte:head>
@@ -47,10 +63,11 @@
 		<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center mb-2">Re-zero</h1>
 		<p class="text-gray-500 dark:text-gray-400 text-sm text-center mb-6">{t.signup.subtitle}</p>
 
-		<form onsubmit={handleSubmit} class="space-y-4">
+		<form method="POST" use:enhance={submit} class="space-y-4">
 			<div>
 				<input
 					id="username"
+					name="name"
 					bind:value={username}
 					type="text"
 					placeholder={t.signup.usernamePlaceholder}
@@ -62,6 +79,7 @@
 			<div>
 				<input
 					id="password"
+					name="password"
 					bind:value={password}
 					type="password"
 					placeholder={t.signup.passwordPlaceholder}

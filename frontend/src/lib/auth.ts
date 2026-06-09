@@ -17,24 +17,6 @@ export async function login(username: string, password: string): Promise<{ ok: b
   return await res.json()
 }
 
-export async function signup(username: string, password: string): Promise<void> {
-  const signupUrl = import.meta.env.VITE_SIGNUP_URL || 'http://localhost:3000'
-  const res = await fetch(signupUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: username, password }),
-  })
-
-  if (res.status === 409) {
-    throw new Error('Username already taken')
-  }
-  if (!res.ok) {
-    throw new Error('Sign-up failed')
-  }
-
-  await login(username, password)
-}
-
 export async function logout(): Promise<void> {
   await fetch(`${COUCHDB_URL}/_session`, {
     method: 'DELETE',
