@@ -14,6 +14,13 @@
 		await add(trimmed);
 	}
 
+	function handleInputKeydown(e: KeyboardEvent) {
+		// Escape unfocuses the add-task input.
+		if (e.key === 'Escape') {
+			inputEl?.blur();
+		}
+	}
+
 	function handleGlobalKeydown(e: KeyboardEvent) {
 		// Shift+L focuses the add-task input.
 		if (e.shiftKey && e.key.toLowerCase() === 'l') {
@@ -35,6 +42,7 @@
 		id="add-input"
 		bind:this={inputEl}
 		bind:value={text}
+		onkeydown={handleInputKeydown}
 		type="text"
 		placeholder={t.tasks.addPlaceholder}
 		class="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
